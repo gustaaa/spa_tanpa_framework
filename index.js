@@ -1,64 +1,73 @@
-const linkRoot = document.getElementById("root");
-function Navbar() {
-    const linkHome = document.createElement("a");
-    linkHome.href = "#home";
-    linkHome.textContent = "Home";
-    linkHome.onclick = function (event) {
+const root = document.getElementById("root");
+
+function link(props) {
+    const link = document.createElement("a");
+    link.href = props.href;
+    link.textContent = props.label;
+    link.onclick = function (event) {
         event.preventDefault();
-        const homeScreen = HomeScreen();
+        const component = props.Component();
         root.innerHTML = "";
-        root.append(homeScreen);
+        root.append(component);
         history.pushState(null, "", event.target.href);
     };
 
-    const linkAbout = document.createElement("a");
-    linkAbout.href = "#about";
-    linkAbout.textContent = "About";
-    linkAbout.onclick = function (event) {
-        event.preventDefault();
-        const aboutScreen = AboutScreen();
-        root.innerHTML = "";
-        root.append(aboutScreen);
-        history.pushState(null, "", event.target.href);
-    };
+    return link;
+}
+
+function Navbar() {
+    const linkHome = link({
+        href: "#home",
+        label: "Home",
+        Component: HomeScreen,
+    });
+
+    const linkAbout = link({
+        href: "#about",
+        label: "About",
+        Component: AboutScreen,
+    });
 
     const div = document.createElement("div");
     div.append(linkHome);
     div.append(linkAbout);
+
+    return div;
+}
+
+function AboutScreen() {
+    const linkHome = link({
+        href: "#home",
+        label: "Kembali ke Home",
+        Component: HomeScreen,
+    });
+
+    const text = document.createElement("p");
+    text.textContent = "Welcome to About";
+
+    const div = document.createElement("div");
+    div.append(linkHome);
+    div.append(text);
+
     return div;
 }
 
 function HomeScreen() {
     const navbar = Navbar();
-    const textPreview = document.createElement('p');
+
+    const textPreview = document.createElement("p");
+
     const input = document.createElement("input");
     input.oninput = function (event) {
         textPreview.textContent = event.target.value;
-    };
+    }
     input.placeholder = "Enter your name";
+
     const div = document.createElement("div");
     div.append(navbar);
     div.append(input);
     div.append(textPreview);
-    return div;
-}
 
-function AboutScreen() {
-    const linkHome = document.createElement("a");
-    linkHome.href = "#home";
-    linkHome.textContent = "Kembali ke Home";
-    linkHome.onclick = function (event) {
-        event.preventDefault();
-        const homeScreen = HomeScreen();
-        root.innerHTML = "";
-        root.append(homeScreen);
-        history.pushState(null, "", event.target.href);
-    };
-    const text = document.createElement("p");
-    text.textContent = "Welcome to About";
-    const div = document.createElement("div");
-    div.append(linkHome);
-    div.append(text);
     return div;
 }
 
@@ -67,7 +76,7 @@ if (location.hash == "#about") {
     root.innerHTML = "";
     root.append(aboutScreen);
 } else if (location.hash == "#home") {
-    const homeScreen = homeScreen();
+    const homeScreen = HomeScreen();
     root.innerHTML = "";
     root.append(homeScreen);
 }
